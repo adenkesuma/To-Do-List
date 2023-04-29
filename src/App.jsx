@@ -1,14 +1,16 @@
 import './App.css';
-import Content from './components/Content';
-import Navbar from './components/Navbar';
+import Activity from './Activity';
+import TodoList from './components/TodoList';
+import { Routes, Route } from 'react-router-dom';
 
 const App = () => {
   return (
     <>
-      <div>
-        <Navbar />
-        <Content />
-      </div>
+      <Routes>
+        <Route exact path="/" element={<Activity />}>
+          <Route path="/detail/:id" element={<TodoList />} />
+        </Route>
+      </Routes>
     </>
   )
 }
