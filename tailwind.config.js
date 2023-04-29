@@ -8,6 +8,9 @@ export default {
     extend: {
       boxShadow: {
         'sm': '0 4px 8px rgba(0,0,0,.15)',
+      },
+      backgroundImage: {
+        'edit-button': "url('./src/assets/todo-title-edit-button.svg')",
       }
     },
     screens: {
