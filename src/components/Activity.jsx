@@ -21,19 +21,19 @@ export default function Activity() {
       }
     };
 
-    console.log(todos.length)
-
     useEffect(() => {
       fetchTodos();
     }, [todos]);
 
     const deleteActivityGroup = async (id) => {
       try {
-        await axios.delete(
-          `https://todo.api.devcode.gethired.id/activity-groups/${id}`
-        );
+        const confirmed = window.confirm("Apakah anda yakin mau menghapus nya ?");
+        if (confirmed === true) {
+          await axios.delete(
+            `https://todo.api.devcode.gethired.id/activity-groups/${id}`
+          );
+        }
         setTodos(todos.filter((group) => group.id !== id));
-        console.log(todos)
       } catch (error) {
         console.error(error);
       }
@@ -55,7 +55,7 @@ export default function Activity() {
     };
 
     return (
-      <>
+      <div className="relative">
         <Header />
         <main className="w-full px-[186px]">
           {/* todo header */}
@@ -134,6 +134,6 @@ export default function Activity() {
             )}
           </div>
         </main>
-      </>
+      </div>
     );
 }
