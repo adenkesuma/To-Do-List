@@ -1,24 +1,28 @@
 import { useState, useEffect } from "react";
 import Header from "./Header";
 import { useParams } from "react-router-dom/dist";
-import { Link } from "react-router-dom/dist";
 import backButton from "../assets/todo-back-button.svg";
 import editButtonIcon from "../assets/todo-title-edit-button.svg";
 import filterIcon from "../assets/filter-icon.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import { useNavigate } from "react-router-dom/dist";
+import emptyTodolistBackground from "../assets/todo-empty-state.png";
 
 export default function ActivityDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [activityGroup, setActivityGroup] = useState({});
   const [title, setTitle] = useState("New Activity");
   const [isEditing, setIsEditing] = useState(false);
-  const [newTitle, setNewTitle] = useState("");
+  const [todolist, setTodolist] = useState([]);
+  const [isTodo, setIsTodo] = useState(true);
+  const [newTitle, setNewTitle] = useState();
 
   useEffect(() => {
      fetchData();
-  }, []);
+  }, [isEditing]);
 
   const fetchData = async () => {
     try {
@@ -52,12 +56,20 @@ export default function ActivityDetail() {
 
     axios
       .put(url, data, config)
-      .then((response) => console.log(response.data))
+      .then((response) => {
+        setActivityGroup(response.data);
+        console.log(response.data)
+        setIsEditing(false);
+      })
       .catch((error) => console.error(error));
 
-    setIsEditing(false);
   };
 
+  const handleAddTodo = () => {
+    setTodolist(prevTodo => [...prevTodo, "new todo"]);
+    console.log(todolist)
+    setIsTodo(false);
+  }
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -68,20 +80,24 @@ export default function ActivityDetail() {
     setNewTitle(event.target.value);
   };
 
+  const handleRedirect = () => {
+    navigate("/");
+  }
+
   return (
     <div>
       <Header />
       <main className="w-full px-[186px]">
         <div className="flex justify-between mt-[43px] mb-[55px]">
           <div className="flex items-center">
-            <Link to="/">
+            <button className="border-none outline-none" onClick={handleRedirect}>
               <img
                 className="mr-[20px] w-[32px] h-[32px]"
                 data-cy="todo-back-button"
                 src={backButton}
                 alt="back button"
               />
-            </Link>
+            </button>
             <h1
               data-cy="todo-title"
               className="font-[700] text-[36px] text-[#212529]"
@@ -94,7 +110,7 @@ export default function ActivityDetail() {
                   onChange={handleTitleChange}
                 />
               ) : (
-                title
+                newTitle ? newTitle : title
               )}
             </h1>
             {!isEditing && (
@@ -131,6 +147,7 @@ export default function ActivityDetail() {
             </div>
 
             <button
+              onClick={handleAddTodo}
               data-cy="todo-add-button"
               className="w-[170px] h-[54px] bg-[#16abf8] rounded-[45px] border-none py-[13.5px] px-[29px] font-[600] text-[18px] text-[#ffffff]"
             >
@@ -142,8 +159,30 @@ export default function ActivityDetail() {
             </button>
           </div>
         </div>
+
+        {/* content */}
+        <div className="flex justify-center items-center">
+          {isTodo ?
+            (<button onClick={handleAddTodo}>
+                <img
+                  className="w-[541px] h-[413px] mb-[50px]"
+                  data-cy="activity-empty-state"
+                  src={emptyTodolistBackground}
+                  alt="image activity empty state"
+                />
+            </button> ) : 
+            (
+              <div className="flex flex-col w-[100%]">
+                {todolist.map((todo, idx) => (
+                    <p key={idx}>
+                      {todo}
+                    </p>
+                ))}
+              </div>
+            )
+          }
+        </div>
       </main>
-      <p>{id}</p>
     </div>
   );
 }
