@@ -21,8 +21,8 @@ export default function ActivityDetail() {
   const [newTitle, setNewTitle] = useState();
 
   useEffect(() => {
-     fetchData();
-  }, [isEditing]);
+    fetchData();
+  }, [isEditing, activityGroup]);
 
   const fetchData = async () => {
     try {
@@ -30,6 +30,7 @@ export default function ActivityDetail() {
         `https://todo.api.devcode.gethired.id/activity-groups?email=adenfdfd10@gmail.com&id=${id}`
       );
       setActivityGroup(response.data.data[0]);
+      console.log(activityGroup)
       setTitle(response.data.data[0].title);
     } catch (error) {
       console.log(error);
@@ -50,6 +51,7 @@ export default function ActivityDetail() {
 
     const data = {
       title: newTitle,
+      email: email,
       created_at: now.toISOString(),
       updated_at: now.toISOString(),
     };
