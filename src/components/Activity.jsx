@@ -32,6 +32,7 @@ export default function Activity() {
       try {
         setPopup(true);
         console.log(deleteActivity)
+
         if (deleteActivity === true) {
           await axios.delete(
             `https://todo.api.devcode.gethired.id/activity-groups/${id}`
@@ -66,9 +67,8 @@ export default function Activity() {
     }
 
     const handleDeleteActivity = () => {
+      setPopup(false)
       setDeleteActivity(true);
-      // deleteActivityGroup();
-      setPopup(false);
     }
 
     return (
